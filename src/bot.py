@@ -61,7 +61,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
 
         loop = get_running_loop()
         file_path, title = await loop.run_in_executor(None, lambda: download_video(url))
-        caption = title or "Видео"
+        caption = "@yi_video_downloader_bot"
 
         # Пытаемся отправить как видео
         try:
