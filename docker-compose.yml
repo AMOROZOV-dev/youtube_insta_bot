@@ -6,6 +6,10 @@ services:
     environment:
       - BOT_TOKEN=${BOT_TOKEN}
       - DOWNLOAD_DIR=/downloads
+      - YTDLP_COOKIES=${YTDLP_COOKIES:-}
+      - YTDLP_UA=${YTDLP_UA:-}
     volumes:
       - ./downloads:/downloads
+      # Опционально: примонтировать cookies.txt (если нужно для YouTube)
+      # - ./cookies.txt:/app/cookies.txt:ro
     restart: unless-stopped
