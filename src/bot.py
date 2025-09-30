@@ -1,4 +1,3 @@
-import asyncio
 import logging
 import os
 import re
@@ -57,7 +56,10 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
     title: str | None = None
 
     try:
-        loop = asyncio.get_event_loop()
+        # Запуск блока скачивания в пуле тредов, чтобы не блокировать event loop
+        from asyncio import get_running_loop
+
+        loop = get_running_loop()
         file_path, title = await loop.run_in_executor(None, lambda: download_video(url))
         caption = title or "Видео"
 
@@ -95,7 +97,7 @@ async def handle_text(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
             cleanup_file(file_path)
 
 
-async def main() -> None:
+def main() -> None:
     token = os.getenv("BOT_TOKEN")
     if not token:
         raise RuntimeError("BOT_TOKEN не задан в переменных окружения")
@@ -106,14 +108,8 @@ async def main() -> None:
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_text))
 
     logger.info("Starting bot with polling...")
-    await app.run_polling(allowed_updates=Update.ALL_TYPES, close_loop=False)
+    app.run_polling(allowed_updates=Update.ALL_TYPES)
 
 
 if __name__ == "__main__":
-    try:
-        import uvloop  # type: ignore
-
-        uvloop.install()
-    except Exception:
-        pass
-    asyncio.run(main())
+    main()
