@@ -27,24 +27,3 @@ docker compose up -d --build
 
 ### Ограничения Telegram
 Если видео слишком большое для загрузки ботом, бот отправит сообщение с исходной ссылкой.
-
-### Локальная разработка (необязательно)
-```
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-BOT_TOKEN=... DOWNLOAD_DIR=./downloads python -m src.bot
-```
-
-### Публикация в GitHub
-Выполните команды:
-
-```
-git init
-git add .
-git commit -m "Initial commit: Telegram video bot"
-# Создайте репозиторий на GitHub и замените URL нижe на ваш
-git remote add origin https://github.com/<your_user>/<your_repo>.git
-git branch -M main
-git push -u origin main
-```
