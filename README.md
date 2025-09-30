@@ -15,6 +15,7 @@ BOT_TOKEN=123456789:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 # при необходимости:
 # YTDLP_COOKIES=/app/cookies.txt
 # YTDLP_UA=Mozilla/5.0 (...ваш кастомный UA...)
+# YTDLP_FORCE_IPV4=1  # полезно при ошибках сети/IPv6 в Docker
 ```
 
 2) Запустите:

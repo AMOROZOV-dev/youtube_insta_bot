@@ -24,6 +24,9 @@ FRAGMENT_RETRIES = int(os.getenv("YTDLP_FRAGMENT_RETRIES", "10"))
 # Внешние попытки вокруг extract_info (сетевые фейлы, DNS, и т.п.)
 OUTER_ATTEMPTS = int(os.getenv("DOWNLOADER_ATTEMPTS", "3"))
 
+# Форсировать IPv4 (актуально для Docker-хостов без IPv6)
+FORCE_IPV4 = os.getenv("YTDLP_FORCE_IPV4", "1").strip() not in ("0", "false", "False")
+
 SUPPORTED_DOMAINS = (
     "youtube.com",
     "youtu.be",
@@ -67,7 +70,13 @@ def _build_ydl_opts() -> dict:
                 "player_client": ["android"],
             }
         },
+        # Снизить параллелизм фрагментов для стабильности сети
+        "concurrent_fragment_downloads": 1,
     }
+
+    if FORCE_IPV4:
+        # Принудительно IPv4
+        ydl_opts["source_address"] = "0.0.0.0"
 
     if COOKIES_FILE:
         cookie_path = Path(COOKIES_FILE)
@@ -106,7 +115,6 @@ def download_video(url: str) -> Tuple[Path, str]:
         vid_id = info.get("id")
         matches = list(original.glob(f"*{vid_id}.*"))
         if not matches:
-            # Если и это не помогло, пробрасываем последнюю ошибку, если была
             if last_exc:
                 raise last_exc
             raise FileNotFoundError("Файл после загрузки не найден")
